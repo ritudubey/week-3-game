@@ -18,6 +18,13 @@ margin-bottom: 12px;
 	.navbar-header h1 h2 {
 		text-align: center;
 	}
+	.uicontainer{
+	margin-right: auto;
+	margin-left: auto;
+	padding: 15px 15px 15px 15px;
+	box-sizing:border-box;
+	background-color: limegreen;
+	}
 
 	.image-dim {
 		width: 100%;

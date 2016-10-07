@@ -5,8 +5,7 @@ function loadPage()
 window.onload=loadPage;
 
 
-//var words = ['apple', 'orange', 'banana', 'cabbage', 'potato'];
-var words = ['cabbage', 'potato'];
+var words = ['apple', 'orange', 'banana', 'cabbage', 'potato'];
 var wins = 0;
 var losses = 0;
 var guesses = 0;
@@ -33,7 +32,6 @@ function displayComputerGuess(word, lettersGuessed, displayCorrectAns){
 			if(found == false){
 				if(displayCorrectAns != undefined && displayCorrectAns === true){
 					displayMask[i]='<font color="#FF0000">' + computerGuess[i] + '</font>';
-					//<font color="#FF0000">f</font>
 				}else {
 					displayMask[i]='_';
 				}
@@ -48,7 +46,6 @@ function displayComputerGuess(word, lettersGuessed, displayCorrectAns){
 		}
 	}
 	document.getElementById("curWordId").innerHTML= displayMask;
-	// document.getElementById("curWordId2").innerHTML= word;
 }
 
 function clearPriorWord(){
@@ -58,7 +55,6 @@ function clearPriorWord(){
 	correctGuesses=0;
 	guessesAllowed=0;
 	document.getElementById("curWordId").innerHTML= displayMask;
-	// document.getElementById("curWordId2").innerHTML= computerGuess;
 	document.getElementById("letterGuessedId").innerHTML= lettersTyped;
 }
 
@@ -92,6 +88,32 @@ var checkIfGoodGuess = function(userGuess){
 	return found;
 }
 
+function displayAlert(str){
+	var alertDiv = document.createElement('div');
+
+	alertDiv.setAttribute('class', 'uicontainer');
+	alertDiv.setAttribute('id', 'alertDivId');
+
+	alertDiv.innerHTML="<p>" + str + "</p>";
+	var parentDiv1 = document.getElementById('message1');
+	parentDiv1.appendChild(alertDiv);
+	var parentDiv2 = document.getElementById('message2');
+	var button = document.createElement('button');
+	button.setAttribute('id', 'buttonId');
+	button.innerHTML="<p>" +"Play Again ? Press Me" +"</p>";
+	button.onclick = buttonClickFunction;
+	parentDiv2.appendChild(button);
+}
+
+function buttonClickFunction(){
+	var element = document.getElementById('alertDivId');
+	element.parentNode.removeChild(element);
+	var button = document.getElementById('buttonId');
+	button.parentNode.removeChild(button);
+	clearPriorWord();
+	onLoad();
+}
+
 function printHtmlReport(){
 	var html = "<p>Press r, p or s to start playing.</p>"
 	html += "<p>Wins: " + wins + "</p>"; 
@@ -102,11 +124,9 @@ function printHtmlReport(){
 }
 
 var onLoad = function() {
-		//alert('Inside onload function')
-		var computerRandomNumber = Math.floor(Math.random() * words.length);
+	var computerRandomNumber = Math.floor(Math.random() * words.length);
 
-		var randomWord = words[computerRandomNumber];
-	//convert into char array;
+	var randomWord = words[computerRandomNumber];
 	for(i=0;i<randomWord.length;i++){
 		computerGuess.push(randomWord[i]);
 	}
@@ -124,16 +144,9 @@ document.onkeyup = function(event) {
 
 	var userGuess = String.fromCharCode(event.keyCode).toLowerCase();
 
-	if(gameover ===true) {
-		gameover = false;
-		clearPriorWord();
-		onLoad();
-		return;
-	}
-
 	//check if valid char
 	var result = alphabets.test(userGuess);
-	if(result == false && gameover=== false) {
+	if(result === false && gameover=== false) {
 		alert('Enter a valid alphabet!! '+ userGuess + ' is not valid');
 		return;
 	}
@@ -141,7 +154,7 @@ document.onkeyup = function(event) {
 	//check if user previously picked this letter
 	var dupl = checkIfDuplicate(userGuess);
 	//if yes, then ignore the pick
-	if(dupl == true){
+	if(dupl === true){
 		return;
 	}
 
@@ -153,15 +166,16 @@ document.onkeyup = function(event) {
 	var letterfound = checkIfGoodGuess(userGuess);
 
 	//if yes, update display of word
-	if (letterfound == true) {
+	if (letterfound === true) {
 		displayComputerGuess(computerGuess, lettersTyped, false);	
 
 	//check if word complete?
-	if(displayMask.indexOf('_') == -1){
+	if(displayMask.indexOf('_') === -1){
 			//if yes, display you won, increment wins
-			alert("You guessed correct!!!");
 			wins++;
 			document.getElementById("numWinsId").innerHTML= wins;
+			gameover=true;
+			displayAlert("You guessed correct!!!");
 		}
 
 	}
@@ -173,10 +187,10 @@ document.onkeyup = function(event) {
 	//check if guesses are remaining
 	if(guessesAllowed < 1){
 		gameover=true;
-		alert("Sorry no more tries");
 		losses++;
 		document.getElementById("numLossesId").innerHTML= losses;
 		displayComputerGuess(computerGuess, lettersTyped, true);
+		displayAlert("Sorry no more tries!!!");
 		return;
 	}
 }
