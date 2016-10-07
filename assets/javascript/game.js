@@ -5,7 +5,8 @@ function loadPage()
 window.onload=loadPage;
 
 
-var words = ['apple', 'orange', 'banana', 'cabbage', 'potato'];
+//var words = ['apple', 'orange', 'banana', 'cabbage', 'potato'];
+var words = ['cabbage', 'potato'];
 var wins = 0;
 var losses = 0;
 var guesses = 0;
@@ -156,7 +157,7 @@ document.onkeyup = function(event) {
 		displayComputerGuess(computerGuess, lettersTyped, false);	
 
 	//check if word complete?
-	if(correctGuesses == computerGuess.length){
+	if(displayMask.indexOf('_') == -1){
 			//if yes, display you won, increment wins
 			alert("You guessed correct!!!");
 			wins++;
