@@ -4,8 +4,9 @@ function loadPage()
 }
 window.onload=loadPage;
 
-
-var words = ['apple', 'orange', 'banana', 'cabbage', 'potato'];
+var fruits = ['apple', 'orange', 'banana', 'tomato', 'guava', 'cantelope', 'cherry', 'avocado', 'apricot', 'strawberry', 'pineapple', 'pear', 'mango'];
+var vegetables = ['okra','cabbage', 'potato', 'broccoli', 'asparagus', 'turnip', 'pumpkin', 'eggplant' ,'onion', 'spinach', 'pepper'];
+var words = [];
 var wins = 0;
 var losses = 0;
 var guesses = 0;
@@ -13,12 +14,53 @@ var guessesAllowed = 0;
 var correctGuesses = 0;
 var alphabets = /^[A-z]+$/;
 var lettersTyped = [];
-var computerGuess = [];
-var displayMask = [];
+var displayMask = "";
 var gameover=false;
+var computerRandomNumber=0;
+var computerGuess="";
 
+
+
+function main(){
+	document.getElementById('mainPage').style.display = "block";
+	document.getElementById('gamePage').style.display = "none";
+}
+
+
+function pickedfruit(){
+	computerRandomNumber = Math.floor(Math.random()*fruits.length);
+	computerGuess = fruits[computerRandomNumber];
+	document.getElementById('mainPage').style.display = "none";
+	document.getElementById('gamePage').style.display = "block";
+	document.getElementById('categoryName').innerHTML = "Fruit";
+	hangman();
+
+}
+
+function pickedvegetable(){
+	computerRandomNumber = Math.floor(Math.random()*vegetables.length);
+	computerGuess = vegetables[computerRandomNumber];
+	document.getElementById('mainPage').style.display = "none";
+	document.getElementById('gamePage').style.display = "block";
+	document.getElementById('categoryName').innerHTML = "Vegetable";
+	hangman();
+}
+
+var onLoad = function() {
+
+	main();
+}
+
+var hangman = function() {
+	displayComputerGuess(computerGuess);
+
+	guessesAllowed = 7;
+	document.getElementById("GuessesAllowId").innerHTML= guessesAllowed;
+
+}
 
 function displayComputerGuess(word, lettersGuessed, displayCorrectAns){
+	displayMask="";
 	if(lettersGuessed != undefined && lettersGuessed.length >0 ){
 
 		for(i=0;i<computerGuess.length;i++){
@@ -31,18 +73,18 @@ function displayComputerGuess(word, lettersGuessed, displayCorrectAns){
 			}
 			if(found == false){
 				if(displayCorrectAns != undefined && displayCorrectAns === true){
-					displayMask[i]='<font color="#FF0000">' + computerGuess[i] + '</font>';
+					displayMask +='<font color="#FF0000">' + computerGuess[i] + '</font>';
 				}else {
-					displayMask[i]='_';
+					displayMask +='_';
 				}
 			}else{
-				displayMask[i]=computerGuess[i];
+				displayMask +=computerGuess[i];
 			}
 
 		}
 	}else{
 		for(i=0;i<computerGuess.length;i++){
-			displayMask[i]='_';
+			displayMask +='_';
 		}
 	}
 	document.getElementById("curWordId").innerHTML= displayMask;
@@ -97,9 +139,11 @@ function displayAlert(str){
 	alertDiv.innerHTML="<p>" + str + "</p>";
 	var parentDiv1 = document.getElementById('message1');
 	parentDiv1.appendChild(alertDiv);
+	
 	var parentDiv2 = document.getElementById('message2');
 	var button = document.createElement('button');
 	button.setAttribute('id', 'buttonId');
+	button.setAttribute('class', 'btn btn-default uicontainer');
 	button.innerHTML="<p>" +"Play Again ? Press Me" +"</p>";
 	button.onclick = buttonClickFunction;
 	parentDiv2.appendChild(button);
@@ -111,33 +155,19 @@ function buttonClickFunction(){
 	var button = document.getElementById('buttonId');
 	button.parentNode.removeChild(button);
 	clearPriorWord();
-	onLoad();
+
+	var parentImageDiv = document.getElementById('hangmanimage');
+	var c = parentImageDiv.children;
+	var image = c[0];
+	image.setAttribute('src', 'assets/images/hangwons.gif');
+
+
+	if(document.getElementById('categoryName').innerHTML === "Vegetable")
+		pickedvegetable();
+	else
+		pickedfruit();
+	hangman();
 }
-
-function printHtmlReport(){
-	var html = "<p>Press r, p or s to start playing.</p>"
-	html += "<p>Wins: " + wins + "</p>"; 
-	html += "<p>Losses: " + losses + "</p>";
-	html += "<p>Ties: " + ties + "</p>";
-
-	document.querySelector("#game").innerHTML = html;
-}
-
-var onLoad = function() {
-	var computerRandomNumber = Math.floor(Math.random() * words.length);
-
-	var randomWord = words[computerRandomNumber];
-	for(i=0;i<randomWord.length;i++){
-		computerGuess.push(randomWord[i]);
-	}
-
-	//draw dashes for the length of the word
-	displayComputerGuess(computerGuess);
-
-	guessesAllowed = computerGuess.length+2;
-	document.getElementById("GuessesAllowId").innerHTML= guessesAllowed;
-}
-
 
 
 document.onkeyup = function(event) {
@@ -176,16 +206,56 @@ document.onkeyup = function(event) {
 			document.getElementById("numWinsId").innerHTML= wins;
 			gameover=true;
 			displayAlert("You guessed correct!!!");
+			
+			var parentImageDiv = document.getElementById('hangmanimage');
+			var c = parentImageDiv.children;
+			var image = c[0];
+			image.setAttribute('src', 'assets/images/hangwons.gif');
+
 		}
+		return;
 
 	}
 
-	//decrement guessesAllowed
-	guessesAllowed--;
+
 	document.getElementById("GuessesAllowId").innerHTML= guessesAllowed;
 
+	var parentImageDiv = document.getElementById('hangmanimage');
+	var c = parentImageDiv.children;
+	var image = c[0];
+	
+	switch(guessesAllowed){
+		case 7: 
+		image.setAttribute('src', 'assets/images/hangfrm7.gif');
+		break;
+		case 6: 
+		image.setAttribute('src', 'assets/images/hangfrm6.gif');
+		break;
+		case 5: 
+		image.setAttribute('src', 'assets/images/hangfrm5.gif');
+		break;
+		case 4: 
+		image.setAttribute('src', 'assets/images/hangfrm4.gif');
+		break;
+		case 3: 
+		image.setAttribute('src', 'assets/images/hangfrm3.gif');
+		break;
+		case 2: 
+		image.setAttribute('src', 'assets/images/hangfrm2.gif');
+		break;
+		case 1: 
+		image.setAttribute('src', 'assets/images/hangfrm1.gif');
+		break;
+		case 0: 
+		image.setAttribute('src', 'assets/images/hungmans.gif');
+		break;
+	}
+	
+	//decrement guessesAllowed
+	guessesAllowed--;
+
 	//check if guesses are remaining
-	if(guessesAllowed < 1){
+	if(guessesAllowed < 0){
 		gameover=true;
 		losses++;
 		document.getElementById("numLossesId").innerHTML= losses;
