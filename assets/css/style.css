@@ -37,6 +37,10 @@ h2, p {
 	margin: 10px 40px 10px 10px;
 }
 
+#gamePage{
+	display: none;
+}
+
 #mainPage{
 	background-color: yellow;
 
